@@ -18,24 +18,24 @@ router.get('/callback', async (req, res) => {
   const { data } = await getUserDetailsByAccessToken(accessToken);
 
   const githubUser = {
-    user_name: data.login,
-    img_url: data.avatar_url,
+    username: data.login,
+    imgURL: data.avatar_url,
     bio: data.bio,
   };
 
-  const user_id = await db.getUser(data.login).then(([user]) => {
+  const userId = await db.getUser(data.login).then(([user]) => {
     if (!user)
-      return db.saveUser(githubUser).then(details => details[0].user_id);
-    return Promise.resolve(user.user_id);
+      return db.saveUser(githubUser).then(details => details[0].userId);
+    return Promise.resolve(user.userId);
   });
 
   await sessions.createSession({
     accessToken,
-    user_name: data.login,
-    user_id,
+    username: data.login,
+    userId,
   });
 
-  res.cookie('id', user_id);
+  res.cookie('id', userId);
   res.redirect(process.env.LOGIN_REDIRECT);
 });
 

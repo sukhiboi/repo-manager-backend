@@ -17,6 +17,7 @@ const Database = require('./src/database');
 
 const authMiddleware = require('./src/middleware/authorizeUser');
 const authRouter = require('./src/routes/auth');
+const repoRouter = require('./src/routes/repo');
 
 const app = express();
 app.use(cookieParser());
@@ -28,5 +29,6 @@ app.locals.db = new Database(knex);
 
 app.use('/api/auth', authRouter);
 app.use('/api/*', authMiddleware);
+app.use('/api/repo', repoRouter);
 
 module.exports = app;

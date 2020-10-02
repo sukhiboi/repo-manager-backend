@@ -5,7 +5,7 @@ class Sessions {
 
   createSession(user) {
     return new Promise((resolve, reject) => {
-      this.client.set(`${user.user_id}`, JSON.stringify(user), (err, reply) => {
+      this.client.set(`${user.userId}`, JSON.stringify(user), (err, reply) => {
         if (err) reject(err);
         resolve(reply);
       });
