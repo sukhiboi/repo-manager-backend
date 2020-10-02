@@ -1,4 +1,6 @@
 const express = require('express');
+const getRepoInfo = require('./../repoApi');
+
 const router = express.Router();
 
 router.post('/addRepo', (req, res) => {
@@ -8,6 +10,28 @@ router.post('/addRepo', (req, res) => {
       .saveRepo({ ...payload, username })
       .then(id => res.end(`${id}`));
   });
+});
+
+router.get('/getRepos', (req, res) => {
+  const db = req.app.locals.db;
+  db.getRepos(20)
+    .then(repos => {
+      const reposDetails = repos.map(
+        ({ username, repoName, appLink, repoId }) => {
+          return getRepoInfo(`${username}/${repoName}`).then(data => ({
+            ...data,
+            username,
+            repoName,
+            appLink,
+            repoId,
+          }));
+        }
+      );
+      return Promise.all(reposDetails);
+    })
+    .then(reposDetails => {
+      res.json(reposDetails);
+    });
 });
 
 module.exports = router;
