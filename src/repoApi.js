@@ -1,4 +1,5 @@
 const axios = require('axios');
+const standard = require('./../standard.json');
 
 const getRepoInfo = repo => {
   return new Promise((resolve, reject) => {
@@ -10,7 +11,11 @@ const getRepoInfo = repo => {
         },
       })
       .then(({ data }) => {
-        resolve(data);
+        const fields = standard.reduce(
+          (fields, key) => ({ ...fields, [key]: data[key] }),
+          {}
+        );
+        resolve(fields);
       })
       .catch(reject);
   });
