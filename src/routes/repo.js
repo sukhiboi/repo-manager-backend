@@ -17,15 +17,17 @@ router.get('/getRepos', (req, res) => {
   db.getRepos(20)
     .then(repos => {
       const reposDetails = repos.map(repo => {
-        return getRepoInfo(`${repo.username}/${repo.repoName}`).then(data => ({
-          ...data,
-          ...repo,
-        }));
+        return getRepoInfo(`${repo.username}/${repo.repoName}`)
+          .then(data => ({
+            ...data,
+            ...repo,
+          }))
+          .catch(() => false);
       });
       return Promise.all(reposDetails);
     })
     .then(reposDetails => {
-      res.json(reposDetails);
+      res.json(reposDetails.filter(repo => repo));
     });
 });
 
